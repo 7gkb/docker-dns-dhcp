@@ -1,0 +1,20 @@
+//
+// Do any local configuration here
+//
+
+view "internals" {
+
+recursion yes;
+zone "sec.7gkb.ru" {
+        type master;
+        file "/var/cache/bind/db.sec.7gkb.ru";
+        allow-update { key DDNS_UPDATE; };
+};
+zone "108.168.192.in-addr.arpa" {
+        type master;
+        file "/var/cache/bind/db.sec.7gkb.ru.inv";
+        allow-update { key DDNS_UPDATE; };
+};
+};
+
+include "/etc/bind/zones.rfc1918";
