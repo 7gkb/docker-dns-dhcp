@@ -27,12 +27,19 @@ RUN \
 COPY srv/tftp/ /srv/tftp/
 
 # Configure DNS & DHCP
-COPY etc/ /etc
+COPY etc/bind /etc/bind
+COPY etc/dhcp /etc/dhcp
 RUN chown -R bind:bind /etc/bind
 RUN dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE \
-  && cp 'Kddns_update.+157+'*.private /etc/bind/ddns.key \
-  && cp  'Kddns_update.+157+'*.private /etc/dhcp/ddns.key
-
+  && echo "key DDNS_UPDATE {" > /etc/bind/ddns.key \
+  && echo "  algorithm HMAC-MD5.SIG-ALG.REG.INT;" >> /etc/bind/ddns.key \
+  && grep "Key:" 'Kddns_update.+157+'*.private | awk -F ' ' '{print "  secret \""$2"\";"}' >> /etc/bind/ddns.key \
+  && echo "};" >> /etc/bind/ddns.key \
+  && cp  /etc/bind/ddns.key /etc/dhcp/ddns.key \
+  && > /var/lib/dhcp/dhcpd.leases
+#  && cp 'Kddns_update.+157+'*.private /etc/bind/ddns.key \
+#  && cp  'Kddns_update.+157+'*.private /etc/dhcp/ddns.key
+COPY var/cache/bind /var/cache/bind
 
 # Download and extract MemTest86+
 ENV MEMTEST_VERSION 5.01
@@ -43,15 +50,20 @@ RUN wget -q http://www.memtest.org/download/"$MEMTEST_VERSION"/memtest86+-"$MEMT
 # Download and extract Clonezilla
 ENV CLONEZILLA_VERSION 2.6.3-7
 RUN wget -q https://netix.dl.sourceforge.net/project/clonezilla/clonezilla_live_stable/"$CLONEZILLA_VERSION"/clonezilla-live-"$CLONEZILLA_VERSION"-amd64.zip \
-  && unzip -j clonezilla-live-"$CLONEZILLA_VERSION"-amd64.zip live/vmlinuz live/initrd.img live/filesystem.squashfs -d /srv/tftp/clonezilla
+  && unzip -j -o clonezilla-live-"$CLONEZILLA_VERSION"-amd64.zip live/vmlinuz live/initrd.img live/filesystem.squashfs -d /srv/tftp/clonezilla
 
 # Download and extract Gparted
 ENV GPARTED_VERSION 1.0.0-5
 RUN wget -q https://netix.dl.sourceforge.net/project/gparted/gparted-live-stable/"$GPARTED_VERSION"/gparted-live-"$GPARTED_VERSION"-amd64.zip \
-  && unzip -j gparted-live-"$GPARTED_VERSION"-amd64.zip live/vmlinuz live/initrd.img live/filesystem.squashfs -d /srv/tftp/gparted
+  && unzip -j -o gparted-live-"$GPARTED_VERSION"-amd64.zip live/vmlinuz live/initrd.img live/filesystem.squashfs -d /srv/tftp/gparted
 
 # Start dnsmasq. It picks up default configuration from /etc/dnsmasq.conf and
 # /etc/default/dnsmasq plus any command line switch
 EXPOSE 53/udp 53/tcp 67/udp 68/udp 10000/tcp
 # ENTRYPOINT ["dnsmasq", "--no-daemon"]
 # CMD ["--dhcp-range=192.168.4.100,192.168.4.200,255.255.254.0"]
+#ENTRYPOINT [ "bind" ]
+ENTRYPOINT [ "/usr/sbin/named", "-4", "-c /etc/bind/named.conf" ]
+#CMD [ "dhcpd" ]
+#RUN dhcpd && bind
+#CMD [ "tail", "-f", "/var/lib/dhcp/dhcpd.leases" ]

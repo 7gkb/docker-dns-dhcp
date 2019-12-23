@@ -10,7 +10,7 @@ zone "sec.7gkb.ru" {
         file "/var/cache/bind/db.sec.7gkb.ru";
         allow-update { key DDNS_UPDATE; };
 };
-zone "108.168.192.in-addr.arpa" {
+zone "5.168.192.in-addr.arpa" {
         type master;
         file "/var/cache/bind/db.sec.7gkb.ru.inv";
         allow-update { key DDNS_UPDATE; };
