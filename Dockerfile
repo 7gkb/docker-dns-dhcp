@@ -7,6 +7,7 @@ RUN apt-get -y -q update && apt-get -y -q install bind9 bind9utils isc-dhcp-serv
 
 ENV SYSLINUX_VERSION 6.03
 ENV TEMP_SYSLINUX_PATH /tmp/syslinux-"$SYSLINUX_VERSION"
+ENV DHCP_DEV ens18
 WORKDIR /tmp
 RUN \
   mkdir -p "$TEMP_SYSLINUX_PATH" \
@@ -36,7 +37,8 @@ RUN dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE \
   && grep "Key:" 'Kddns_update.+157+'*.private | awk -F ' ' '{print "  secret \""$2"\";"}' >> /etc/bind/ddns.key \
   && echo "};" >> /etc/bind/ddns.key \
   && cp  /etc/bind/ddns.key /etc/dhcp/ddns.key \
-  && > /var/lib/dhcp/dhcpd.leases
+  && > /var/lib/dhcp/dhcpd.leases \
+  && echo "INTERFACESv4=\"$DHCP_DEV\"" > /etc/default/isc-dhcp-server
 #  && cp 'Kddns_update.+157+'*.private /etc/bind/ddns.key \
 #  && cp  'Kddns_update.+157+'*.private /etc/dhcp/ddns.key
 COPY var/cache/bind /var/cache/bind
@@ -63,7 +65,7 @@ EXPOSE 53/udp 53/tcp 67/udp 68/udp 10000/tcp
 # ENTRYPOINT ["dnsmasq", "--no-daemon"]
 # CMD ["--dhcp-range=192.168.4.100,192.168.4.200,255.255.254.0"]
 #ENTRYPOINT [ "bind" ]
-ENTRYPOINT [ "/usr/sbin/named", "-4", "-c /etc/bind/named.conf" ]
+#ENTRYPOINT [ "/usr/sbin/named", "-4", "-c /etc/bind/named.conf" ]
 #CMD [ "dhcpd" ]
 #RUN dhcpd && bind
 #CMD [ "tail", "-f", "/var/lib/dhcp/dhcpd.leases" ]
