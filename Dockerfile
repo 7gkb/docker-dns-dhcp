@@ -3,7 +3,7 @@ FROM debian:latest
 LABEL maintainer "eduard.v@bk.ru"
 
 # Install the necessary packages
-RUN apt-get -y -q update && apt-get -y -q install bind9 bind9utils isc-dhcp-server dnsutils wget unzip procps
+RUN apt-get -y -q update && apt-get -y -q install bind9 bind9utils isc-dhcp-server dnsutils wget unzip tftpd-hpa procps
 
 ENV SYSLINUX_VERSION 6.03
 ENV TEMP_SYSLINUX_PATH /tmp/syslinux-"$SYSLINUX_VERSION"
