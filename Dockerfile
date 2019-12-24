@@ -70,4 +70,4 @@ EXPOSE 53/udp 53/tcp 67/udp 68/udp 10000/tcp
 #CMD [ "dhcpd" ]
 #RUN dhcpd && bind
 #CMD [ "tail", "-f", "/var/lib/dhcp/dhcpd.leases" ]
-CMD /etc/init.d/tftpd-hpa start
+#CMD /etc/init.d/tftpd-hpa start
