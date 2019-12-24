@@ -14,6 +14,7 @@ RUN \
   && wget -q https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"$SYSLINUX_VERSION".tar.gz \
   && tar -xzf syslinux-"$SYSLINUX_VERSION".tar.gz \
   && mkdir -p /srv/tftp /srv/tftp/memtest /srv/tftp/clonezilla /srv/tftp/gparted \
+  && chown tftp:tftp /srv/tftp \
   && cp "$TEMP_SYSLINUX_PATH"/bios/core/pxelinux.0 /srv/tftp/ \
   && cp "$TEMP_SYSLINUX_PATH"/bios/com32/libutil/libutil.c32 /srv/tftp/ \
   && cp "$TEMP_SYSLINUX_PATH"/bios/com32/elflink/ldlinux/ldlinux.c32 /srv/tftp/ \
@@ -69,3 +70,4 @@ EXPOSE 53/udp 53/tcp 67/udp 68/udp 10000/tcp
 #CMD [ "dhcpd" ]
 #RUN dhcpd && bind
 #CMD [ "tail", "-f", "/var/lib/dhcp/dhcpd.leases" ]
+CMD /etc/init.d/tftpd-hpa start
