@@ -14,7 +14,6 @@ RUN \
   && wget -q https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-"$SYSLINUX_VERSION".tar.gz \
   && tar -xzf syslinux-"$SYSLINUX_VERSION".tar.gz \
   && mkdir -p /srv/tftp /srv/tftp/memtest /srv/tftp/clonezilla /srv/tftp/gparted \
-  && chown tftp:tftp /srv/tftp \
   && cp "$TEMP_SYSLINUX_PATH"/bios/core/pxelinux.0 /srv/tftp/ \
   && cp "$TEMP_SYSLINUX_PATH"/bios/com32/libutil/libutil.c32 /srv/tftp/ \
   && cp "$TEMP_SYSLINUX_PATH"/bios/com32/elflink/ldlinux/ldlinux.c32 /srv/tftp/ \
@@ -26,6 +25,12 @@ RUN \
 #ENV IP_ADDRESS 10.77.77.1
 
 # Configure PXE and TFTP
+RUN chown tftp:tftp /srv/tftp \
+  && sed -i 's/TFTP_OPTIONS="--secure"/TFTP_OPTIONS="--secure --create"/g' /etc/default/tftpd-hpa
+#  && echo "" > /etc/default/tftpd-hpa \
+#  && echo "" >> /etc/default/tftpd-hpa \
+#  && echo "" >> /etc/default/tftpd-hpa \
+#  && echo "" >> /etc/default/tftpd-hpa
 COPY srv/tftp/ /srv/tftp/
 
 # Configure DNS & DHCP
