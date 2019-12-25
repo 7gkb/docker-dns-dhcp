@@ -61,12 +61,5 @@ RUN wget -q https://netix.dl.sourceforge.net/project/gparted/gparted-live-stable
 
 # Start dnsmasq. It picks up default configuration from /etc/dnsmasq.conf and
 # /etc/default/dnsmasq plus any command line switch
-EXPOSE 53/udp 53/tcp 67/udp 68/udp 10000/tcp
-# ENTRYPOINT ["dnsmasq", "--no-daemon"]
-# CMD ["--dhcp-range=192.168.4.100,192.168.4.200,255.255.254.0"]
-#ENTRYPOINT [ "bind" ]
-#ENTRYPOINT [ "/usr/sbin/named", "-4", "-c /etc/bind/named.conf" ]
-#CMD [ "dhcpd" ]
-#RUN dhcpd && bind
-#CMD [ "tail", "-f", "/var/lib/dhcp/dhcpd.leases" ]
+EXPOSE 53/udp 53/tcp 67/udp 68/udp 953/tcp 10000/tcp
 CMD /etc/init.d/tftpd-hpa start && /etc/init.d/bind9 start && /etc/init.d/isc-dhcp-server start && tail -f /var/lib/dhcp/dhcpd.leases
