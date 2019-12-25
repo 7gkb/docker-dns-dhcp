@@ -8,9 +8,9 @@ LABEL Clonezilla-live
   APPEND initrd=clonezilla/initrd.img boot=live username=user union=overlay config components quiet noswap edd=on nomodeset nodmraid locales= keyboard-layouts= ocs_live_run="ocs-live-general" ocs_live_extra_param="" ocs_live_batch=no net.ifnames=0 nosplash noprompt fetch=tftp://192.168.5.250/clonezilla/filesystem.squashfs
 
 LABEL GParted Live
-            MENU LABEL GParted Live
-            kernel /gparted/vmlinuz
-            append initrd=gparted/initrd.img boot=live config components union=overlay username=user noswap noeject ip= vga=788 fetch=tftp://192.168.5.250/gparted/filesystem.squashfs
+  MENU LABEL GParted Live
+  kernel /gparted/vmlinuz
+  append initrd=gparted/initrd.img boot=live config components union=overlay username=user noswap noeject ip= vga=788 fetch=tftp://192.168.5.250/gparted/filesystem.squashfs
 
 LABEL bootlocal
 	MENU LABEL Boot Local HDD
