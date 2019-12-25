@@ -27,10 +27,6 @@ RUN \
 # Configure PXE and TFTP
 RUN chown tftp:tftp /srv/tftp \
   && sed -i 's/TFTP_OPTIONS="--secure"/TFTP_OPTIONS="--secure --create"/g' /etc/default/tftpd-hpa
-#  && echo "" > /etc/default/tftpd-hpa \
-#  && echo "" >> /etc/default/tftpd-hpa \
-#  && echo "" >> /etc/default/tftpd-hpa \
-#  && echo "" >> /etc/default/tftpd-hpa
 COPY srv/tftp/ /srv/tftp/
 
 # Configure DNS & DHCP
@@ -45,8 +41,6 @@ RUN dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE \
   && cp  /etc/bind/ddns.key /etc/dhcp/ddns.key \
   && > /var/lib/dhcp/dhcpd.leases \
   && echo "INTERFACESv4=\"$DHCP_DEV\"" > /etc/default/isc-dhcp-server
-#  && cp 'Kddns_update.+157+'*.private /etc/bind/ddns.key \
-#  && cp  'Kddns_update.+157+'*.private /etc/dhcp/ddns.key
 COPY var/cache/bind /var/cache/bind
 
 # Download and extract MemTest86+
