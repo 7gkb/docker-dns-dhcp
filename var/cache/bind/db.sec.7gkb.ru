@@ -8,7 +8,7 @@ sec.7gkb.ru		IN SOA	srv-dns-dhcp-05.sec.7gkb.ru. root.sec.7gkb.ru. (
 				600        ; minimum (10 minutes)
 				)
 			NS	srv-dns-dhcp-05.sec.7gkb.ru.
-			MX	10 srv-dns-dhcp-03.gkb7.local.
+			MX	10 srv-dns-dhcp-03.sec.7gkb.ru.
 $ORIGIN sec.7gkb.ru.
 mail			CNAME	srv-dns-dhcp-03
 $TTL 3600	; 1 hour

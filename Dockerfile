@@ -40,7 +40,10 @@ RUN dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE \
   && echo "};" >> /etc/bind/ddns.key \
   && cp  /etc/bind/ddns.key /etc/dhcp/ddns.key \
   && > /var/lib/dhcp/dhcpd.leases \
-  && echo "INTERFACESv4=\"$DHCP_DEV\"" > /etc/default/isc-dhcp-server
+  && echo "INTERFACESv4=\"$DHCP_DEV\"" > /etc/default/isc-dhcp-server \
+  && mkdir /var/log/named \
+  && chown bind:bind /var/log/named \
+  && ln -s /var/log/named/named.log /etc/bind/named.log
 COPY var/cache/bind /var/cache/bind
 
 # Download and extract MemTest86+
