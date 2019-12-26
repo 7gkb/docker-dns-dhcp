@@ -32,6 +32,7 @@ COPY srv/tftp/ /srv/tftp/
 # Configure DNS & DHCP
 COPY etc/bind /etc/bind
 COPY etc/dhcp /etc/dhcp
+#VOLUME [ "/tmp", "/run", "/data", "/var/log/journal" ]
 RUN chown -R bind:bind /etc/bind
 RUN dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE \
   && echo "key DDNS_UPDATE {" > /etc/bind/ddns.key \
@@ -64,5 +65,5 @@ RUN wget -q https://netix.dl.sourceforge.net/project/gparted/gparted-live-stable
 
 # Start dnsmasq. It picks up default configuration from /etc/dnsmasq.conf and
 # /etc/default/dnsmasq plus any command line switch
-EXPOSE 53/udp 53/tcp 67/udp 68/udp 953/tcp 10000/tcp
+EXPOSE 53/udp 53/tcp 67/udp 68/udp 69/udp 953/tcp 10000/tcp
 CMD /etc/init.d/tftpd-hpa start && /etc/init.d/bind9 start && /etc/init.d/isc-dhcp-server start && tail -f /var/lib/dhcp/dhcpd.leases
